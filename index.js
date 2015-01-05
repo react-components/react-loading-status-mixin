@@ -13,12 +13,12 @@ module.exports = {
     this._scheduleStatusUpdate = createScheduleStatusUpdate();
 
     // child
-    var parent = this._getParentComponent();
+    var parent = this._getLoadingStatusParentComponent();
     if (parent) parent._registerChild(this._rootNodeID);
   },
   componentWillUnmount: function() {
     // child
-    var parent = this._getParentComponent();
+    var parent = this._getLoadingStatusParentComponent();
     if (parent) parent._unregisterChild(this._rootNodeID);
   },
 
@@ -43,11 +43,11 @@ module.exports = {
    */
 
   childContextTypes: {
-    parentComponent: ReactObject
+    loadingStatusParentComponent: ReactObject
   },
   getChildContext: function() {
     return {
-      parentComponent: this
+      loadingStatusParentComponent: this
     };
   },
 
@@ -123,7 +123,7 @@ module.exports = {
 
   setIsLoaded: function(isLoaded) {
     var self = this;
-    var parent = self._getParentComponent();
+    var parent = self._getLoadingStatusParentComponent();
     var isLoading = !isLoaded;
 
     isLoading = isLoading || false;
@@ -138,11 +138,11 @@ module.exports = {
    */
 
   contextTypes: {
-    parentComponent: ReactObject
+    loadingStatusParentComponent: ReactObject
   },
-  _getParentComponent: function() {
+  _getLoadingStatusParentComponent: function() {
     var context = this.context;
-    return context && context.parentComponet;
+    return context && context.loadingStatusParentComponent;
   }
 };
 

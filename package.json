@@ -1,0 +1,29 @@
+{
+  "name": "react-loading-status-mixin",
+  "version": "0.1.0",
+  "description": "get the loading status of the component tree",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-components/react-loading-status-mixin.git"
+  },
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/react-components/react-loading-status-mixin/issues"
+  },
+  "homepage": "https://github.com/react-components/react-loading-status-mixin",
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "should": "^4.4.2"
+  },
+  "dependencies": {
+    "raf": "^2.0.4"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}

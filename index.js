@@ -11,6 +11,8 @@ module.exports = {
   componentWillMount: function() {
     // parent
     this._scheduleStatusUpdate = createScheduleStatusUpdate();
+    this._children = {};
+    this._childrenCount = 0;
 
     // child
     var parent = this._getLoadingStatusParentComponent();
@@ -66,8 +68,6 @@ module.exports = {
    * Setup child registration/deregistration
    */
 
-  _children: {},
-  _childrenCount: 0,
   _registerChild: function(key) {
     var self = this;
     var children = self._children;
@@ -98,10 +98,9 @@ module.exports = {
     var children = self._children;
     var prev = self.state.childrenLoadingStatus;
     var isLoading = false;
-    var rootID = self._rootNodeID;
 
     for (var k in children) {
-      if (children[k] && k !== rootID) {
+      if (children[k]) {
         isLoading = true;
         break;
       }
@@ -115,7 +114,9 @@ module.exports = {
     var children = self._children;
     var prev = children[key];
     children[key] = status;
-    if (prev !== status) self._scheduleStatusUpdate();
+    if (prev === status) return;
+    self._scheduleStatusUpdate();
+    self._notifyParentLoadingStatus(prev, !self.isLoaded());
   },
 
   // child

@@ -1,6 +1,6 @@
 {
   "name": "react-loading-status-mixin",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "get the loading status of the component tree",
   "main": "index.js",
   "scripts": {

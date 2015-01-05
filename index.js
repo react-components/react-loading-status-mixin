@@ -96,20 +96,26 @@ module.exports = {
   _updateChildrenLoadingStatus: function() {
     var self = this;
     var children = self._children;
+    var prev = self.state.childrenLoadingStatus;
     var isLoading = false;
+    var rootID = self._rootNodeID;
+
     for (var k in children) {
-      if (children[k]) {
+      if (children[k] && k !== rootID) {
         isLoading = true;
         break;
       }
     }
+
+    if (prev === isLoading) return;
     self.setState({childrenLoadingStatus: isLoading});
   },
   _setChildLoadingStatus: function(key, status) {
-    var children = this._children;
+    var self = this;
+    var children = self._children;
     var prev = children[key];
-    if (prev !== status) this._scheduleStatusUpdate();
     children[key] = status;
+    if (prev !== status) self._scheduleStatusUpdate();
   },
 
   // child
@@ -123,14 +129,24 @@ module.exports = {
 
   setIsLoaded: function(isLoaded) {
     var self = this;
-    var parent = self._getLoadingStatusParentComponent();
     var isLoading = !isLoaded;
+    var state = self.state;
+    var prev = state.loadingStatus;
 
     isLoading = isLoading || false;
-    self.state.loadingStatus = isLoading;
+    state.loadingStatus = isLoading;
+
+    self._notifyParentLoadingStatus(prev, !self.isLoaded());
+  },
+
+  _notifyParentLoadingStatus: function(prev, isLoading) {
+    var self = this;
+    var parent = self._getLoadingStatusParentComponent();
 
     if (parent) parent._setChildLoadingStatus(self._rootNodeID, isLoading);
-    else self._scheduleStatusUpdate(self.forceUpdate);
+    else self._scheduleStatusUpdate(function() {
+      if (prev !== self.state.loadingStatus) self.forceUpdate();
+    });
   },
 
   /**
@@ -156,13 +172,9 @@ function createScheduleStatusUpdate() {
 
   function update(self, fn) {
     raf(function() {
-      if (self.isMounted()) {
-        try {
-          fn();
-        } catch(e) {}
-      }
+      if (self.isMounted()) fn();
       isChanging = false;
-      if (shouldUpdate) update(self);
+      if (shouldUpdate) update(self, fn);
       shouldUpdate = false;
     });
   }
